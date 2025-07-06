@@ -22,10 +22,16 @@
   <div class="flex flex-col bg-gray-200 space-y-4">
     <strong class="text-2xl">Ingresar reserva ahora:</strong>
     <input
-      type="text"
-      placeholder="9:00"
+      type="date"
+      [(ngModel)]="dateStr"
+      class="border-0 rounded-sm w-full bg-gray-400 p-2"
+      placeholder="Fecha"
+    />
+    <input
+      type="time"
       [(ngModel)]="timeStr"
       class="border-0 rounded-sm w-full bg-gray-400 p-2 placeholder:text-gray-300"
+      placeholder="Hora"
     />
     <button
       (click)="createReservation()"
@@ -64,22 +70,15 @@
       placeholder="Hora"
     />
 
-    <input
-      type="text"
-      [(ngModel)]="deleteClient"
-      class="border-0 rounded-sm w-full bg-gray-400 p-2 placeholder:text-gray-300"
-      placeholder="Nombre del cliente"
-    />
-
     <button
       (click)="deleteReservation()"
       class="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
     >
       Eliminar Reserva
     </button>
-    @if (deleteDate || deleteTime || deleteClient) {
+    @if (deleteDate || deleteTime || userName) {
       <div class="text-sm text-gray-600">
-        <strong>Clave a eliminar:</strong> {{deleteDate}} {{deleteTime}}_{{deleteClient}}
+        <strong>Clave a eliminar:</strong> {{deleteDate}} {{deleteTime}}_{{userName}}
       </div>
     }
   </div>

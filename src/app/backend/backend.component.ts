@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -24,12 +24,13 @@ interface NodePosition {
 })
 export class BackendComponent implements OnInit {
   userName: string = "";
-
   treeStructure: TreeNode | null = null;
   nodePositions: NodePosition[] = [];
   lines: { x1: number, y1: number, x2: number, y2: number }[] = [];
   svgWidth = 1200;
   svgHeight = 800;
+  isLoading = false;
+  errorMessage = '';
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -56,29 +57,96 @@ export class BackendComponent implements OnInit {
     this.router.navigate(["/backend"]);
   }
 
-  loadTreeStructure() {
-    this.http.get<any>('/arbol.json')
+    loadTreeStructure() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    // Configurar headers para evitar problemas de CORS
+    const httpOptions = {
+      responseType: 'text' as const,
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      })
+    };
+
+            // Intentar con 127.0.0.1 primero, si falla, usar puerto alternativo
+    const baseUrl = 'http://127.0.0.1:8080';
+    console.log('Haciendo petición a: ' + baseUrl + '/reserva/tree');
+
+    this.http.get(baseUrl + '/reserva/tree', httpOptions)
       .subscribe({
         next: (response) => {
-          console.log('Estructura del árbol:', response);
-          this.treeStructure = response.tree;
-          this.calculatePositions();
+          console.log('Respuesta del servidor (texto):', response);
+          console.log('Tipo de respuesta:', typeof response);
+          console.log('Longitud de respuesta:', response.length);
+
+          // Verificar si la respuesta parece ser HTML
+          if (typeof response === 'string' && response.trim().startsWith('<!doctype html>')) {
+            this.errorMessage = 'El servidor está devolviendo HTML en lugar de JSON. Posible problema de CORS o configuración del servidor.';
+            console.error('Respuesta HTML detectada:', response.substring(0, 200) + '...');
+            this.isLoading = false;
+            return;
+          }
+
+          try {
+            // Intentar parsear manualmente el JSON
+            const jsonResponse = JSON.parse(response);
+            console.log('Respuesta parseada:', jsonResponse);
+
+            // Verificar si la respuesta es válida
+            if (jsonResponse && typeof jsonResponse === 'object') {
+              if (jsonResponse.tree !== undefined) {
+                this.treeStructure = jsonResponse.tree;
+                this.calculatePositions();
+                console.log('Árbol cargado exitosamente');
+              } else {
+                this.errorMessage = 'La respuesta no contiene la estructura del árbol';
+              }
+            } else {
+              this.errorMessage = 'Respuesta del servidor no es válida';
+            }
+          } catch (parseError) {
+            console.error('Error al parsear JSON:', parseError);
+            console.error('Respuesta que causó el error:', response);
+            this.errorMessage = 'Error al procesar la respuesta del servidor';
+          }
+
+          this.isLoading = false;
         },
         error: (error) => {
           console.error('Error al cargar estructura del árbol:', error);
+          console.error('Detalles del error:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+            error: error.error
+          });
+
+          this.errorMessage = `Error del servidor: ${error.status} - ${error.statusText}`;
+          this.isLoading = false;
+
+          // Si el servidor no está ejecutándose, mostrar mensaje específico
+          if (error.status === 0) {
+            this.errorMessage = 'No se puede conectar al servidor. Verifica que el servidor C++ esté ejecutándose en puerto 8080.';
+          }
         }
       });
+  }
+
+  // Método para recargar manualmente
+  reloadTree() {
+    this.loadTreeStructure();
   }
 
   private calculatePositions() {
     this.nodePositions = [];
     this.lines = [];
-
     if (!this.treeStructure) return;
 
     const nodeWidth = 120;
     const levelHeight = 80;
-
     this.calculateNodePositions(this.treeStructure, this.svgWidth / 2, 50, nodeWidth, levelHeight);
     this.calculateLines();
   }
@@ -89,11 +157,9 @@ export class BackendComponent implements OnInit {
     this.nodePositions.push({ x, y, node });
 
     const childWidth = width / 2;
-
     if (node.left) {
       this.calculateNodePositions(node.left, x - width/2, y + height, childWidth, height);
     }
-
     if (node.right) {
       this.calculateNodePositions(node.right, x + width/2, y + height, childWidth, height);
     }
@@ -101,7 +167,6 @@ export class BackendComponent implements OnInit {
 
   private calculateLines() {
     this.lines = [];
-
     for (const pos of this.nodePositions) {
       if (pos.node.left) {
         const leftChild = this.nodePositions.find(p => p.node === pos.node.left);
@@ -114,7 +179,6 @@ export class BackendComponent implements OnInit {
           });
         }
       }
-
       if (pos.node.right) {
         const rightChild = this.nodePositions.find(p => p.node === pos.node.right);
         if (rightChild) {

@@ -11,13 +11,12 @@ import { Router } from '@angular/router';
 export class MainComponent implements OnInit {
   userName: string = "";
   today = new Date();
-  dateStr = this.today.toISOString().slice(0, 10);
+  dateStr: string = this.today.toISOString().slice(0, 10);
   timeStr : string = "";
   datetime = `${this.dateStr} ${this.timeStr}`;
   reservas: any[] = []
   deleteDate: string = '';
   deleteTime: string = '';
-  deleteClient: string = '';
 
   constructor(private router: Router, private httpclient: HttpClient) {}
 
@@ -27,13 +26,13 @@ export class MainComponent implements OnInit {
   }
 
   createReservation() {
-    if (!this.timeStr) {
-      alert('Por favor ingresa una hora');
+    if (!this.timeStr || !this.dateStr) {
+      alert('Por favor ingresa una fecha y hora');
       return;
     }
 
     const reservationData = {
-      datetime: this.datetime,
+      datetime: `${this.dateStr} ${this.timeStr}`,
       client: this.userName
     };
 
@@ -51,7 +50,7 @@ export class MainComponent implements OnInit {
   }
 
   loadReservations() {
-    this.httpclient.get<any>('/reservations.json').subscribe({
+    this.httpclient.get<any>('http://localhost:8080/reservations').subscribe({
       next: (data) => {
         this.reservas = (data.reservations || []).map((reserva: string) => {
           const [datetime, client] = reserva.split('_');
@@ -65,15 +64,16 @@ export class MainComponent implements OnInit {
   }
 
   deleteReservation() {
-    if (!this.deleteDate || !this.deleteTime || !this.deleteClient) {
+    if (!this.deleteDate || !this.deleteTime || !this.userName) {
       alert('Por favor completa todos los campos para eliminar');
       return;
     }
 
-    const key = `${this.deleteDate} ${this.deleteTime}_${this.deleteClient}`;
+    const key = `${this.deleteDate} ${this.deleteTime}_${this.userName}`;
     console.log('Clave a eliminar:', key);
 
     const encodedKey = encodeURIComponent(key);
+    console.log(encodedKey);
 
     this.httpclient.delete(`http://localhost:8080/reservations/${encodedKey}`)
       .subscribe({
@@ -81,7 +81,6 @@ export class MainComponent implements OnInit {
           console.log('Reserva eliminada:', response);
           this.deleteDate = '';
           this.deleteTime = '';
-          this.deleteClient = '';
           this.loadReservations();
         },
         error: (error) => {
