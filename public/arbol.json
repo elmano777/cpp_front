@@ -1,0 +1,104 @@
+{
+  "message": "Estructura del arbol p - Versión extendida para pruebas",
+  "tree": {
+    "right": {
+      "right": {
+        "right": {
+          "right": null,
+          "left": {
+            "right": null,
+            "left": null,
+            "priority": 67,
+            "key": "2024-01-22 16:30_Proyecto finalizado exitosamente"
+          },
+          "priority": 89,
+          "key": "2024-01-22 15:45_Revisión de código completada"
+        },
+        "left": {
+          "right": {
+            "right": null,
+            "left": null,
+            "priority": 34,
+            "key": "2024-01-21 14:20_Error en la base de datos solucionado"
+          },
+          "left": {
+            "right": null,
+            "left": null,
+            "priority": 23,
+            "key": "2024-01-21 12:15_Implementación de nueva funcionalidad"
+          },
+          "priority": 78,
+          "key": "2024-01-21 13:30_Reunión con el equipo de desarrollo"
+        },
+        "priority": 134,
+        "key": "2024-01-21 16:00_Pruebas unitarias actualizadas"
+      },
+      "left": {
+        "right": {
+          "right": null,
+          "left": null,
+          "priority": 45,
+          "key": "2024-01-20 11:00_No me lo vas a creer causa3"
+        },
+        "left": {
+          "right": null,
+          "left": null,
+          "priority": 12,
+          "key": "2024-01-20 08:30_Inicio del sprint de desarrollo"
+        },
+        "priority": 158,
+        "key": "2024-01-20 9:00_No me lo vas a creer causa"
+      },
+      "priority": 189,
+      "key": "2024-01-20 14:30_Configuración del servidor actualizada"
+    },
+    "left": {
+      "right": {
+        "right": {
+          "right": null,
+          "left": null,
+          "priority": 56,
+          "key": "2024-01-19 17:45_Backup programado correctamente"
+        },
+        "left": {
+          "right": null,
+          "left": null,
+          "priority": 29,
+          "key": "2024-01-19 15:20_Optimización de consultas SQL"
+        },
+        "priority": 98,
+        "key": "2024-01-19 16:30_Documentación técnica actualizada"
+      },
+      "left": {
+        "right": {
+          "right": null,
+          "left": null,
+          "priority": 41,
+          "key": "2024-01-18 11:45_Integración con API externa"
+        },
+        "left": {
+          "right": {
+            "right": null,
+            "left": null,
+            "priority": 18,
+            "key": "2024-01-17 14:00_Refactorización del módulo principal"
+          },
+          "left": {
+            "right": null,
+            "left": null,
+            "priority": 7,
+            "key": "2024-01-17 09:15_Análisis de rendimiento del sistema"
+          },
+          "priority": 33,
+          "key": "2024-01-17 16:30_Corrección de bugs menores"
+        },
+        "priority": 87,
+        "key": "2024-01-18 13:20_Implementación de cache distribuido"
+      },
+      "priority": 156,
+      "key": "2024-01-19 10:00_Migración de datos completada"
+    },
+    "priority": 248,
+    "key": "2024-01-20 10:00_No me lo vas a creer causa2"
+  }
+}

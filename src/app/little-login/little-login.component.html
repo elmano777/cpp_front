@@ -1,0 +1,11 @@
+<main class="flex flex-col items-center justify-center h-screen bg-gray-200 space-y-4">
+  <h1 class="text-2xl font-bold">Bienvenido a la app de reservas querido:</h1>
+  <input
+    type="text"
+    placeholder="Nombre"
+    class="border-2 border-gray-600 rounded-md p-2"
+    [(ngModel)]="userName"
+    (keyup.enter)="login()"
+  />
+  <button class="bg-blue-500 text-white rounded-md p-2 hover:cursor-pointer" (click)="login()">Ingresar</button>
+</main>
