@@ -36,7 +36,7 @@ export class MainComponent implements OnInit {
       client: this.userName
     };
 
-    this.httpclient.post('http://localhost:8080/reservations', reservationData)
+    this.httpclient.post('http://localhost:8081/reservations', reservationData)
       .subscribe({
         next: (response) => {
           console.log('Reserva creada:', response);
@@ -50,7 +50,7 @@ export class MainComponent implements OnInit {
   }
 
   loadReservations() {
-    this.httpclient.get<any>('http://localhost:8080/reservations').subscribe({
+    this.httpclient.get<any>('http://localhost:8081/reservations').subscribe({
       next: (data) => {
         this.reservas = (data.reservations || []).map((reserva: string) => {
           const [datetime, client] = reserva.split('_');
@@ -75,7 +75,7 @@ export class MainComponent implements OnInit {
     const encodedKey = encodeURIComponent(key);
     console.log(encodedKey);
 
-    this.httpclient.delete(`http://localhost:8080/reservations/${encodedKey}`)
+    this.httpclient.delete(`http://localhost:8081/reservations/${encodedKey}`)
       .subscribe({
         next: (response) => {
           console.log('Reserva eliminada:', response);

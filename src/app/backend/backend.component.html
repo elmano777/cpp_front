@@ -30,7 +30,7 @@
       </button>
     </div>
 
-    <div class="w-full h-96 bg-white rounded-lg border-2 border-gray-300 overflow-auto" *ngIf="treeStructure">
+    <div class="w-full h-[900px] bg-white rounded-lg border-2 border-gray-300 overflow-auto" *ngIf="treeStructure">
       <svg [attr.width]="svgWidth" [attr.height]="svgHeight" class="min-w-full min-h-full">
         <g *ngFor="let line of lines">
           <line
@@ -47,7 +47,7 @@
           <circle
             [attr.cx]="pos.x"
             [attr.cy]="pos.y"
-            r="30"
+            r="35"
             fill="#4F46E5"
             stroke="#312E81"
             stroke-width="2"
